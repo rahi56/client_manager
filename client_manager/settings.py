@@ -1,117 +1,129 @@
-"""
-Django settings for client_manager project (Render-ready)
-"""
-
 from pathlib import Path
 import os
-import dj_database_url  # install via pip if using PostgreSQL
+import dj_database_url
 
-# BASE_DIR
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# -----------------------
-# SECURITY SETTINGS
-# -----------------------
-SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+# ===============================
+# SECURITY
+# ===============================
 
-# -----------------------
+SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-secret-key")
+
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+ALLOWED_HOSTS = ["*"]
+
+# ===============================
 # APPLICATIONS
-# -----------------------
+# ===============================
+
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'clients',            # your app
-    'django_filters',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
 ]
 
-# -----------------------
+# ===============================
 # MIDDLEWARE
-# -----------------------
+# ===============================
+
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # must be above CommonMiddleware
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# -----------------------
-# URLS & WSGI
-# -----------------------
-ROOT_URLCONF = 'client_manager.urls'
+# ===============================
+# URLS / WSGI
+# ===============================
 
-WSGI_APPLICATION = 'client_manager.wsgi.application'
+ROOT_URLCONF = "client_manager.urls"
 
-# -----------------------
+WSGI_APPLICATION = "client_manager.wsgi.application"
+
+# ===============================
 # TEMPLATES
-# -----------------------
+# ===============================
+
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-# -----------------------
+# ===============================
 # DATABASE
-# -----------------------
+# ===============================
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR}/db.sqlite3"
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
     )
 }
 
-# -----------------------
+# ===============================
 # PASSWORD VALIDATION
-# -----------------------
+# ===============================
+
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
-# -----------------------
+# ===============================
 # INTERNATIONALIZATION
-# -----------------------
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+# ===============================
+
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
 USE_I18N = True
 USE_TZ = True
 
-# -----------------------
-# STATIC FILES (WhiteNoise)
-# -----------------------
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# ===============================
+# STATIC FILES (RENDER)
+# ===============================
 
-# -----------------------
-# LOGIN / SESSION SETTINGS
-# -----------------------
-LOGIN_URL = '/login/'                # Redirect unauthenticated users
-LOGIN_REDIRECT_URL = '/'             # After login
-SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_AGE = 1800            # 30 minutes
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-# -----------------------
-# DEFAULT AUTO FIELD
-# -----------------------
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+STATICFILES_STORAGE = (
+    "whitenoise.storage.CompressedManifestStaticFilesStorage"
+)
+
+# ===============================
+# DEFAULT PRIMARY KEY
+# ===============================
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
