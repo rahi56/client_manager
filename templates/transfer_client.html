@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Transfer Client | Client Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 fade-in">
+            <div class="card-body p-4 p-md-5">
+                <h2 class="fw-bold mb-4">Transfer Client: {{ client.main_applicant }}</h2>
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Status -->
+                    <div class="mb-3">
+                        <label for="status_select" class="form-label fw-semibold">New Status</label>
+                        <select name="status" id="status_select" class="form-select" onchange="toggleFields()" required>
+                            <option value="Current" {% if client.status == 'Current' %}selected{% endif %}>Current</option>
+                            <option value="Approved" {% if client.status == 'Approved' %}selected{% endif %}>Approved</option>
+                            <option value="Issued" {% if client.status == 'Issued' %}selected{% endif %}>Issued</option>
+                            <option value="Denied" {% if client.status == 'Denied' %}selected{% endif %}>Denied</option>
+                        </select>
+                    </div>
+
+                    <!-- Approved Fields -->
+                    <div id="approved_fields" class="mb-3" style="display: none;">
+                        <label for="fm_input" class="form-label fw-semibold">FM (Family Member)</label>
+                        <input type="text" name="fm" id="fm_input" class="form-control" value="{{ client.fm|default:'' }}">
+
+                        <label for="approval_date_input" class="form-label fw-semibold mt-3">Approval Date</label>
+                        <input type="date" name="approval_date" id="approval_date_input" class="form-control" value="{{ client.approval_date|date:'Y-m-d' }}">
+                    </div>
+
+                    <!-- Denied Fields -->
+                    <div id="denied_fields" class="mb-3" style="display: none;">
+                        <label for="status_notes_input" class="form-label fw-semibold">Status Notes</label>
+                        <textarea name="status_notes" id="status_notes_input" class="form-control">{{ client.status_notes|default:'' }}</textarea>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">Transfer</button>
+                        <a href="{% url 'client_list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        border: 1px solid #dee2e6;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.25rem rgba(67,97,238,0.15);
+    }
+</style>
+
+<script>
+    function toggleFields() {
+        const status = document.getElementById('status_select').value;
+        document.getElementById('approved_fields').style.display = (status === 'Approved') ? 'block' : 'none';
+        document.getElementById('denied_fields').style.display = (status === 'Denied') ? 'block' : 'none';
+    }
+    window.addEventListener('DOMContentLoaded', toggleFields);
+</script>
+{% endblock %}

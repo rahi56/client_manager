@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Clients | Client Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Clients</h2>
+
+    <!-- Search -->
+    <form method="get" class="d-flex gap-2">
+        <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fas fa-search text-muted"></i>
+            </span>
+            <input type="text" name="q" class="form-control border-start-0" placeholder="Search applicant or company..."
+                value="{{ request.GET.q }}" style="min-width: 250px;">
+        </div>
+        <button type="submit" class="btn btn-primary px-4">Search</button>
+    </form>
+</div>
+
+<!-- Clients Table -->
+<div class="table-container fade-in">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Client / Applicant</th>
+                    <th>Status</th>
+                    <th>Initial</th>
+                    <th>Investment</th>
+                    <th>Agent</th>
+                    <th>GCBI</th>
+                    <th>CBI Date</th>
+                    <th>Approval</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td class="fw-medium">
+                        {% if client.company != 'Others' %}
+                        <span class="badge bg-light text-dark border">{{ client.company }}</span>
+                        {% else %}
+                        <span class="badge bg-light text-dark border">{{ client.other_company }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="fw-bold">{{ client.main_applicant }}</div>
+                        <small class="text-muted">ID: #{{ client.id }}</small>
+                    </td>
+                    <td>
+                        {% if client.status == 'Approved' %}
+                        <span class="badge-status status-approved">Approved</span>
+                        {% elif client.status == 'Issued' %}
+                        <span class="badge-status status-issued">Issued</span>
+                        {% elif client.status == 'Denied' %}
+                        <span class="badge-status status-denied">Denied</span>
+                        {% elif client.status == 'Pending' or not client.status %}
+                        <span class="badge-status status-pending">Pending</span>
+                        {% else %}
+                        <span class="badge-status status-default">{{ client.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ client.initial_payment }}</td>
+                    <td>{{ client.investment }}</td>
+                    <td>{{ client.local_agent|default:"" }}</td>
+                    <td><code class="text-primary">{{ client.gcbl_no|default:"" }}</code></td>
+                    <td>{{ client.cbi_submission_date|date:"d M Y"|default:"-" }}</td>
+                    <td>{{ client.approval_date|date:"d M Y"|default:"-" }}</td>
+                    <td class="text-end">
+                        <form method="post" action="{% url 'client_action' client.id %}"
+                            class="d-inline-flex gap-1 align-items-center">
+                            {% csrf_token %}
+                            <input type="hidden" name="redirect" value="client_list">
+                            <select name="action" class="form-select form-select-sm" style="width: auto;"
+                                onchange="toggleManual(this)">
+                                <option value="">Action</option>
+                                <option value="edit">Edit</option>
+                                <option value="delete">Delete</option>
+                                <option value="manual">Update</option>
+                                <option value="approve">Approve</option>
+                                <option value="issued">Issued</option>
+                                <option value="deny">Deny</option>
+                            </select>
+                            <input type="text" name="manual_status" class="form-control form-control-sm"
+                                placeholder="Status" style="display:none; width:100px;">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="text-center py-5">
+                        <div class="text-muted">
+                            <i class="fas fa-user-slash fa-3x mb-3 opacity-25"></i>
+                            <p class="mb-0">No clients found matching your search.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function toggleManual(select) {
+        const input = select.closest('form').querySelector('input[name="manual_status"]');
+        if (select.value === 'manual') {
+            input.style.display = 'inline-block';
+            input.required = true;
+        } else {
+            input.style.display = 'none';
+            input.required = false;
+            input.value = '';
+        }
+    }
+</script>
+{% endblock %}

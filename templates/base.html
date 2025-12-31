@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Client Management{% endblock %}</title>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --bg-color: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #2b2d42;
+            --text-muted: #5e6a7e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-main) !important;
+            transition: all 0.2s ease;
+            padding: 0.5rem 1rem !important;
+            border-radius: 8px;
+        }
+
+        .nav-link:hover {
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary-color) !important;
+        }
+
+        .nav-link.active {
+            color: var(--primary-color) !important;
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            font-weight: 500;
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            background: var(--card-bg);
+            transition: transform 0.3s ease;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+        }
+
+        .table thead th {
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.05rem;
+            background-color: #f1f3f9;
+            border-top: none;
+            border-bottom: 2px solid #dee2e6;
+            padding: 1rem 0.75rem;
+        }
+
+        .table td {
+            vertical-align: middle;
+            font-size: 0.85rem;
+            color: #333;
+            padding: 1.1rem 0.75rem;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .badge-status {
+            padding: 0.5rem 0.85rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.02rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .status-approved {
+            background-color: #d1e7dd;
+            color: #0a3622;
+            border: 1px solid #a3cfbb;
+        }
+
+        .status-issued {
+            background-color: #cff4fc;
+            color: #055160;
+            border: 1px solid #9eeaf9;
+        }
+
+        .status-denied {
+            background-color: #f8d7da;
+            color: #842029;
+            border: 1px solid #f1aeb5;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #664d03;
+            border: 1px solid #ffe69c;
+        }
+
+        .status-default {
+            background-color: #e2e3e5;
+            color: #212529;
+            border: 1px solid #bcbebf;
+        }
+
+        /* Glassmorphism Classes */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #bbb;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'client_list' %}">
+                <i class="fas fa-briefcase-medical me-2"></i>CLIENT MANAGER
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'client_list' %}active{% endif %}"
+                            href="{% url 'client_list' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'company_list' %}active{% endif %}"
+                            href="{% url 'company_list' %}">Companies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'approved_clients' %}active{% endif %}"
+                            href="{% url 'approved_clients' %}">Approved</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'issued_clients' %}active{% endif %}"
+                            href="{% url 'issued_clients' %}">Issued</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'denied_clients' %}active{% endif %}"
+                            href="{% url 'denied_clients' %}">Denied</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-primary btn-sm px-3" href="{% url 'client_create' %}">
+                            <i class="fas fa-plus me-1"></i> Add Client
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-outline-success btn-sm px-3" href="{% url 'export_excel' %}">
+                            <i class="fas fa-file-excel me-1"></i> Export
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item ms-lg-3">
+                        <form method="post" action="{% url 'logout' %}" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link border-0"
+                                style="padding: 0.5rem 1rem !important;">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </button>
+                        </form>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4 card border-0 shadow-sm"
+            role="alert">
+            <div class="d-flex align-items-center">
+                {% if message.tags == 'success' %}
+                <i class="fas fa-check-circle me-2 text-success"></i>
+                {% else %}
+                <i class="fas fa-exclamation-circle me-2 text-danger"></i>
+                {% endif %}
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <div class="fade-in">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer class="py-4 mt-auto">
+        <div class="container text-center text-muted small">
+            &copy; 2025 Client Manager Premium | All Rights Reserved
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
