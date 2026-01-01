@@ -1,3 +1,4 @@
+openpyxl
 dj-config-url
 Django>=4.2
 gunicorn
