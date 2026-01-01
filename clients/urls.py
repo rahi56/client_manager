@@ -25,15 +25,10 @@ urlpatterns = [
     # ---------------- Export ----------------
     path('export-excel/', views.export_excel, name='export_excel'),
 
-    # ---------------- Authentication ----------------
-    path(
-        'login/',
-        auth_views.LoginView.as_view(template_name='login.html'),
-        name='login'
-    ),
-    path(
-        'logout/',
-        auth_views.LogoutView.as_view(next_page='login'),
-        name='logout'
-    ),
-]
+    # Login / Logout
+    path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
+
+
+   ]

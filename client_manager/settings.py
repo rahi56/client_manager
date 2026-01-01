@@ -8,11 +8,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 # ===============================
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "unsafe-secret-key")
+import os
+
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "client_manager.onrender.com",
+]
+
 
 # ===============================
 # APPLICATIONS
@@ -25,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'clients',
 ]
 
 # ===============================
@@ -127,3 +135,9 @@ STATICFILES_STORAGE = (
 # ===============================
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
+CSRF_TRUSTED_ORIGINS = [
+    "https://clients_manager.onrender.com",
+]
